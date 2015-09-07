@@ -2,6 +2,7 @@
 *.meta
 *.sln
 *.userprefs
-./Temp
-./ProjectSettings
-./Library
+Temp/
+ProjectSettings/
+Library/
+*.orig
