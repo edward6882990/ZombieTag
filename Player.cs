@@ -3,7 +3,7 @@ using SocketIO;
 using System.Collections;
 
 namespace Lobby {
-  public class LobbyPanel : MonoBehaviour {
-  
+  public class Player : MonoBehaviour {
+
   }
 }
