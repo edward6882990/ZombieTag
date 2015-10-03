@@ -41,6 +41,7 @@ namespace Lobby {
     void CreateLobbyPlayerObject(JSONObject playerInfo, int position){
       string playerId = playerInfo["id"].str;
       bool   isOwner  = playerInfo["owner"].b;
+      bool   isReady  = playerInfo["ready"].b;
       string lobbyPlayerAssetPath = "Assets/App/Prefabs/Lobby/LobbyPlayer.prefab"; 
 
       float x = 0;
@@ -54,8 +55,9 @@ namespace Lobby {
 
       go_lobbyPlayer.name = playerId;
       go_lobbyPlayer.transform.SetParent(transform);
-      go_lobbyPlayer.transform.Find("Text").GetComponent<Text>().text = playerId;
+      go_lobbyPlayer.transform.Find("PlayerName").GetComponent<Text>().text = playerId;
       go_lobbyPlayer.GetComponent<RectTransform>().anchoredPosition = positionVector;
+      go_lobbyPlayer.transform.Find("Ready").gameObject.active = isReady;
 
       if (isOwner){
         go_lobbyPlayer.GetComponent<Image>().color = new Color32(252, 254, 159, 255);

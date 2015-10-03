@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 [RequireComponent(typeof(SocketIOComponent))]
 public class Events : MonoBehaviour {
+  protected SocketIOComponent socket;
 
   // ================= Socket Events =====================
 
@@ -13,6 +14,8 @@ public class Events : MonoBehaviour {
   public static event SocketEventHandler onJoinGameRoomSuccess;
   public static event SocketEventHandler onGameRoomUpdated;
   public static event SocketEventHandler onLeftGameRoom;
+  public static event SocketEventHandler onReadySuccess;
+  public static event SocketEventHandler onCancelReadySuccess;
   public static event SocketEventHandler onReceivedLobbyUpdate;
   public static event SocketEventHandler onLobbyUpdated;
   public static event SocketEventHandler onLoadGame;
@@ -31,6 +34,14 @@ public class Events : MonoBehaviour {
 
   public static void LeftGameRoom(SocketIOEvent ev){
     if (onLeftGameRoom != null) onLeftGameRoom(ev);
+  }
+
+  public static void Ready(SocketIOEvent ev){
+    if (onReadySuccess != null) onReadySuccess(ev);
+  }
+
+  public static void CancelledReady(SocketIOEvent ev){
+    if (onCancelReadySuccess != null) onCancelReadySuccess(ev);
   }
   
   public static void ReceivedLobbyUpdate(SocketIOEvent ev){
@@ -61,17 +72,28 @@ public class Events : MonoBehaviour {
     socket.Emit("lobby:get-update", new JSONObject(data)); 
   }
 
-  protected SocketIOComponent socket;
+  public static void SendReadySignal(SocketIOComponent socket){
+    socket.Emit("ready");
+  }
+
+  public static void SendCancelReadySignal(SocketIOComponent socket){
+    socket.Emit("cancel:ready");
+  }
 
   void Start(){
     socket = GetComponent<SocketIOComponent>();
 
-    socket.On("create:gameroom:success", GameRoomCreated);
-    socket.On("join:gameroom:success", GameRoomJoined);
-    socket.On("left:gameroom", LeftGameRoom);
-    socket.On("lobby:updated", LobbyUpdated);
-    socket.On("gameroom:updated", GameRoomUpdated);
+    socket.On("lobby:updated"       , LobbyUpdated);
     socket.On("lobby:receive-update", ReceivedLobbyUpdate);
+
+    socket.On("create:gameroom:success", GameRoomCreated);
+    socket.On("join:gameroom:success"  , GameRoomJoined);
+    socket.On("left:gameroom"          , LeftGameRoom);
+
+    socket.On("gameroom:updated"    , GameRoomUpdated);
+    socket.On("ready:success"       , Ready);
+    socket.On("cancel:ready:success", CancelledReady);
+
     socket.On("game:load", LoadGame);
 
     Application.LoadLevel("Lobby");
