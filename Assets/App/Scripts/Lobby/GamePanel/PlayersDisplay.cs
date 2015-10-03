@@ -11,17 +11,30 @@ namespace Lobby {
 
     protected List<GameObject> lobbyPlayers = new List<GameObject>();
 
-    void DestroyAllPlayers(){
-      for(int i = 0; i < lobbyPlayers.Count; i++) {
-        Destroy(lobbyPlayers[i]);
-      }
-    }
 
     public void UpdatePlayersView(JSONObject players){
       DestroyAllPlayers();
       
       for(int i = 0; i < players.list.Count; i++) {
         CreateLobbyPlayerObject(players[i], i);
+      }
+    }
+
+    void OnEnable(){
+      Events.onGameRoomUpdated += GameRoomUpdated;
+    }
+
+    void OnDisable(){
+      Events.onGameRoomUpdated -= GameRoomUpdated;
+    }
+
+    void GameRoomUpdated(SocketIOEvent ev){
+      UpdatePlayersView(ev.data["players"]);
+    }
+
+    void DestroyAllPlayers(){
+      for(int i = 0; i < lobbyPlayers.Count; i++) {
+        Destroy(lobbyPlayers[i]);
       }
     }
 

@@ -50,16 +50,16 @@ namespace Lobby {
     }
 
     void OnEnable(){
-      Events.onGameRoomsUpdated += GameRoomsUpdated;
-      Events.onGameRoomReceiveUpdates += ReceivedGameRoomsUpdate;
+      Events.onLobbyUpdated += LobbyUpdated;
+      Events.onReceivedLobbyUpdate += ReceivedLobbyUpdate;
     }
 
     void OnDisable(){
-      Events.onGameRoomsUpdated -= GameRoomsUpdated;  
-      Events.onGameRoomReceiveUpdates -= ReceivedGameRoomsUpdate;
+      Events.onLobbyUpdated -= LobbyUpdated;  
+      Events.onReceivedLobbyUpdate -= ReceivedLobbyUpdate;
     }
 
-    void GameRoomsUpdated(SocketIOEvent ev){
+    void LobbyUpdated(SocketIOEvent ev){
       UpdatePageInfo(ev);
       PullGameRoomsInfo();
     }
@@ -74,12 +74,10 @@ namespace Lobby {
     }
 
     void PullGameRoomsInfo(){
-      Dictionary<string, string> data = new Dictionary<string, string>();
-      data["page"] = currentPage.ToString();
-      socket.Emit("gamerooms:get-update", new JSONObject(data)); 
+      Events.GetLobbyUpdate(socket, currentPage);
     }
 
-    void ReceivedGameRoomsUpdate(SocketIOEvent ev){
+    void ReceivedLobbyUpdate(SocketIOEvent ev){
       DestroyAllButtons();
       UpdateButtonsView(ev);
     }

@@ -1,6 +1,7 @@
 using UnityEngine;
 using SocketIO;
 using System.Collections;
+using System.Collections.Generic;
 
 [RequireComponent(typeof(SocketIOComponent))]
 public class Events : MonoBehaviour {
@@ -10,11 +11,10 @@ public class Events : MonoBehaviour {
   public delegate void SocketEventHandler(SocketIOEvent ev);
   public static event SocketEventHandler onCreateGameRoomSuccess;
   public static event SocketEventHandler onJoinGameRoomSuccess;
+  public static event SocketEventHandler onGameRoomUpdated;
   public static event SocketEventHandler onLeftGameRoom;
-  public static event SocketEventHandler onGameRoomReceiveUpdates;
-  public static event SocketEventHandler onGameRoomsUpdated;
-  public static event SocketEventHandler onPlayerJoinedGameRoom;
-  public static event SocketEventHandler onPlayerLeftGameRoom;
+  public static event SocketEventHandler onReceivedLobbyUpdate;
+  public static event SocketEventHandler onLobbyUpdated;
   public static event SocketEventHandler onLoadGame;
 
   public static void GameRoomCreated(SocketIOEvent ev){
@@ -25,24 +25,20 @@ public class Events : MonoBehaviour {
     if (onJoinGameRoomSuccess != null) onJoinGameRoomSuccess(ev);
   }
 
+  public static void GameRoomUpdated(SocketIOEvent ev){
+    if (onGameRoomUpdated != null) onGameRoomUpdated(ev);
+  }
+
   public static void LeftGameRoom(SocketIOEvent ev){
     if (onLeftGameRoom != null) onLeftGameRoom(ev);
   }
   
-  public static void ReceivedGameRoomsUpdate(SocketIOEvent ev){
-    if (onGameRoomReceiveUpdates != null) onGameRoomReceiveUpdates(ev);
+  public static void ReceivedLobbyUpdate(SocketIOEvent ev){
+    if (onReceivedLobbyUpdate != null) onReceivedLobbyUpdate(ev);
   }
 
-  public static void GameRoomsUpdated(SocketIOEvent ev){
-    if (onGameRoomsUpdated != null)  onGameRoomsUpdated(ev);
-  }
-
-  public static void PlayerJoinedGameRoom(SocketIOEvent ev){
-    if (onPlayerJoinedGameRoom != null) onPlayerJoinedGameRoom(ev);
-  }
-
-  public static void PlayerLeftGameRoom(SocketIOEvent ev){
-    if (onPlayerLeftGameRoom != null) onPlayerLeftGameRoom(ev);
+  public static void LobbyUpdated(SocketIOEvent ev){
+    if (onLobbyUpdated != null)  onLobbyUpdated(ev);
   }
 
   public static void LoadGame(SocketIOEvent ev){
@@ -59,6 +55,12 @@ public class Events : MonoBehaviour {
     if (onCloseGamePanel != null)  onCloseGamePanel();
   }
 
+  public static void GetLobbyUpdate(SocketIOComponent socket, int pageNum){
+    Dictionary<string, string> data = new Dictionary<string, string>();
+    data["page"] = pageNum.ToString();
+    socket.Emit("lobby:get-update", new JSONObject(data)); 
+  }
+
   protected SocketIOComponent socket;
 
   void Start(){
@@ -67,9 +69,9 @@ public class Events : MonoBehaviour {
     socket.On("create:gameroom:success", GameRoomCreated);
     socket.On("join:gameroom:success", GameRoomJoined);
     socket.On("left:gameroom", LeftGameRoom);
-    socket.On("gamerooms:updated", GameRoomsUpdated);
-    socket.On("player:left:gameroom", PlayerLeftGameRoom);
-    socket.On("gamerooms:receive-update", ReceivedGameRoomsUpdate);
+    socket.On("lobby:updated", LobbyUpdated);
+    socket.On("gameroom:updated", GameRoomUpdated);
+    socket.On("lobby:receive-update", ReceivedLobbyUpdate);
     socket.On("game:load", LoadGame);
 
     Application.LoadLevel("Lobby");
