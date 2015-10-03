@@ -11,9 +11,6 @@ namespace Lobby {
     public const int WIDTH  = 320;
     public const int HEIGHT = 30;
 
-    void Start(){
-      socket = GameObject.Find("SocketIO").GetComponent<SocketIOComponent>();
-    }
 
     public void SetGameId(string id){
       gameId = id;
@@ -26,5 +23,10 @@ namespace Lobby {
 
       socket.Emit("join:gameroom", new JSONObject(data));
     }
+
+    void Start(){
+      socket = GameObject.Find("SocketIO").GetComponent<SocketIOComponent>();
+    }
+
   }
 }

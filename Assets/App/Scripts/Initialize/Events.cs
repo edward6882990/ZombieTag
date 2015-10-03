@@ -74,6 +74,4 @@ public class Events : MonoBehaviour {
 
     Application.LoadLevel("Lobby");
   }
-
-
 }

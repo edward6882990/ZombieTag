@@ -9,6 +9,7 @@ namespace Lobby {
 
     void Start(){
       Events.onCreateGameRoomSuccess += GameRoomCreated;
+      Events.onJoinGameRoomSuccess += GameRoomJoined;
       Events.onLeftGameRoom += LeftGameRoom;
       Hide();
     }
@@ -19,6 +20,10 @@ namespace Lobby {
     }
 
     void GameRoomCreated(SocketIOEvent ev){
+      Show();
+    }
+
+    void GameRoomJoined(SocketIOEvent ev){
       Show();
     }
 

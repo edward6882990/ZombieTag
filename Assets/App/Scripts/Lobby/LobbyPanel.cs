@@ -7,6 +7,7 @@ namespace Lobby {
 
     void OnEnable(){
       Events.onCreateGameRoomSuccess += GameRoomCreated;
+      Events.onJoinGameRoomSuccess += GameRoomJoined;
       Events.onCloseGamePanel += Show;
     }
 
@@ -20,6 +21,10 @@ namespace Lobby {
     }
 
     void GameRoomCreated(SocketIOEvent ev){
+      Hide();
+    }
+
+    void GameRoomJoined(SocketIOEvent ev){
       Hide();
     }
 
