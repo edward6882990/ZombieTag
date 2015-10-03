@@ -1,6 +1,7 @@
 using UnityEngine;
 using SocketIO;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Lobby {
   public class GamePanel : MonoBehaviour {
@@ -8,22 +9,25 @@ namespace Lobby {
     protected bool isInitialized = false;
 
     void Start(){
-      Events.onCreateGameRoomSuccess += GameRoomCreated;
-      Events.onJoinGameRoomSuccess += GameRoomJoined;
+      Events.onCreateGameRoomSuccess += UpdatePlayersDisplayView;
+      Events.onJoinGameRoomSuccess += UpdatePlayersDisplayView;
       Events.onLeftGameRoom += LeftGameRoom;
       Hide();
     }
 
     void OnDestroy(){
-      Events.onCreateGameRoomSuccess -= GameRoomCreated;
+      Events.onCreateGameRoomSuccess -= UpdatePlayersDisplayView;
+      Events.onJoinGameRoomSuccess -= UpdatePlayersDisplayView;
       Events.onLeftGameRoom -= LeftGameRoom;
     }
 
-    void GameRoomCreated(SocketIOEvent ev){
-      Show();
-    }
+    void UpdatePlayersDisplayView(SocketIOEvent ev){
+      JSONObject players = ev.data["players"];
 
-    void GameRoomJoined(SocketIOEvent ev){
+      transform.Find("PlayersDisplay")
+        .GetComponent<PlayersDisplay>()
+        .UpdatePlayersView(players);
+
       Show();
     }
 
