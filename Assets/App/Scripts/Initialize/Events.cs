@@ -9,6 +9,7 @@ public class Events : MonoBehaviour {
 
   public delegate void SocketEventHandler(SocketIOEvent ev);
   public static event SocketEventHandler onCreateGameRoomSuccess;
+  public static event SocketEventHandler onJoinGameRoomSuccess;
   public static event SocketEventHandler onLeftGameRoom;
   public static event SocketEventHandler onGameRoomReceiveUpdates;
   public static event SocketEventHandler onGameRoomsUpdated;
@@ -16,8 +17,20 @@ public class Events : MonoBehaviour {
   public static event SocketEventHandler onPlayerLeftGameRoom;
   public static event SocketEventHandler onLoadGame;
 
+  public static void GameRoomCreated(SocketIOEvent ev){
+    if (onCreateGameRoomSuccess != null) onCreateGameRoomSuccess(ev);
+  }
+
+  public static void GameRoomJoined(SocketIOEvent ev){
+    if (onJoinGameRoomSuccess != null) onJoinGameRoomSuccess(ev);
+  }
+
   public static void LeftGameRoom(SocketIOEvent ev){
     if (onLeftGameRoom != null) onLeftGameRoom(ev);
+  }
+  
+  public static void ReceivedGameRoomsUpdate(SocketIOEvent ev){
+    if (onGameRoomReceiveUpdates != null) onGameRoomReceiveUpdates(ev);
   }
 
   public static void GameRoomsUpdated(SocketIOEvent ev){
@@ -30,14 +43,6 @@ public class Events : MonoBehaviour {
 
   public static void PlayerLeftGameRoom(SocketIOEvent ev){
     if (onPlayerLeftGameRoom != null) onPlayerLeftGameRoom(ev);
-  }
-
-  public static void ReceivedGameRoomsUpdate(SocketIOEvent ev){
-    if (onGameRoomReceiveUpdates != null) onGameRoomReceiveUpdates(ev);
-  }
-
-  public static void GameRoomCreated(SocketIOEvent ev){
-    if (onCreateGameRoomSuccess != null) onCreateGameRoomSuccess(ev);
   }
 
   public static void LoadGame(SocketIOEvent ev){
@@ -60,6 +65,7 @@ public class Events : MonoBehaviour {
     socket = GetComponent<SocketIOComponent>();
 
     socket.On("create:gameroom:success", GameRoomCreated);
+    socket.On("join:gameroom:success", GameRoomJoined);
     socket.On("left:gameroom", LeftGameRoom);
     socket.On("gamerooms:updated", GameRoomsUpdated);
     socket.On("player:left:gameroom", PlayerLeftGameRoom);
