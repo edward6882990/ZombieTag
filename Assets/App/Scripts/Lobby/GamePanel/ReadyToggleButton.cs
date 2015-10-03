@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEditor;
 using SocketIO;
 using System;
 using System.Collections;
