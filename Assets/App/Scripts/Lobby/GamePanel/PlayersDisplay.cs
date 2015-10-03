@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEditor;
 using SocketIO;
 using System.Collections;
 using System.Collections.Generic;
@@ -42,7 +41,6 @@ namespace Lobby {
       string playerId = playerInfo["id"].str;
       bool   isOwner  = playerInfo["owner"].b;
       bool   isReady  = playerInfo["ready"].b;
-      string lobbyPlayerAssetPath = "Assets/App/Prefabs/Lobby/LobbyPlayer.prefab"; 
 
       float x = 0;
       float y = -(position * (LobbyPlayer.HEIGHT + LOBBY_PLAYER_VERTICAL_MARGIN));
@@ -50,7 +48,7 @@ namespace Lobby {
 
       GameObject go_lobbyPlayer = 
         Instantiate(
-          AssetDatabase.LoadAssetAtPath<GameObject>(lobbyPlayerAssetPath)
+          Resources.Load("Prefabs/Lobby/LobbyPlayer")
         ) as GameObject;
 
       go_lobbyPlayer.name = playerId;

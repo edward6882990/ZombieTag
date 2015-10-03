@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEditor;
 using SocketIO;
 using System;
 using System.Collections;
@@ -97,7 +96,6 @@ namespace Lobby {
     }
 
     void CreateGameButton(string gameId, int position){
-      string gameButtonAssetPath = "Assets/App/Prefabs/Lobby/GameButton.prefab";
 
       float x = position % 2 * GameButton.WIDTH;
       float y = -(position / 2 * (GameButton.HEIGHT + GAME_BUTTON_VERTICAL_MARGIN));
@@ -105,7 +103,7 @@ namespace Lobby {
 
       GameObject go_button =
         Instantiate(
-          AssetDatabase.LoadAssetAtPath<GameObject>(gameButtonAssetPath)
+          Resources.Load("Prefabs/Lobby/GameButton")
         ) as GameObject;
 
       go_button.name = gameId;
