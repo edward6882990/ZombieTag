@@ -1,9 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using TitleScreen;
 
-public class StartButton : MonoBehaviour {
-	public void LoadGameScene(){
-		Application.LoadLevel("Game");
-	}
+
+namespace TitleScreen {
+  public class StartButton : MonoBehaviour {
+    public void LoadGameScene(){
+      Application.LoadLevel("Game");
+    }
+  }
 }
